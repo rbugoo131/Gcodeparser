@@ -16,7 +16,8 @@ typedef struct Point{
 
 typedef struct Gcmd_struc{
 	char cmd_type;
-	int G_group;
+	int group_num;
+	int motion_mode;
 	int counter;
 	int status_code;
 
