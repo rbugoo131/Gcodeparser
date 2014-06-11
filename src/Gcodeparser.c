@@ -10,25 +10,16 @@ int main(void)
 	FILE *fr;
 	char fname[200];
 	char cmd_type;
-
-	scanf("%s",fname);
-	fr=freopen(fname,"r",stdin);
-
-	//read until end	while(gets(cmd)!=NULL)
+	
+	printf("Please input the file name:");
+	//scanf("%s",fname);
+	//fr=fopen(fname,"r");
+	
+	while(gets(cmd)!=NULL)
 	{
-		cmd_type=cmd[0];
-
-		switch(cmd_type){
-			case 'G':
-				break;
-			case 'M':
-				break;
-			default:
-				break;
-		}
-
+		gc_execute_line(cmd);
 	}
-
-	fclose(fr);
+	
+	//fclose(fr);
 	return 0;
 }

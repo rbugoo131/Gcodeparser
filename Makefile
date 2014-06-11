@@ -12,11 +12,14 @@ target=Gcodeparser
 
 all: Gcodeparser 
 	rm -rf $(OBJS)
-Gcodeparser: Gcodeparser.o input.o
-	gcc -o ./build/Gcodeparser Gcodeparser.o input.o
+Gcodeparser: Gcodeparser.o gcode.o extra_fun.o
+	gcc -o ./build/Gcodeparser Gcodeparser.o gcode.o extra_fun.o -lm
 
-input.o: $(SRC_DIR)/input.c $(HEADER_DIR)/input.h
-	gcc -c $(SRC_DIR)/input.c -I $(HEADER_DIR)
+extra_fun.o: $(SRC_DIR)/extra_fun.c $(HEADER_DIR)/extra_fun.h
+	gcc -c $(SRC_DIR)/extra_fun.c -I $(HEADER_DIR)
+
+gcode.o: $(SRC_DIR)/gcode.c $(HEADER_DIR)/gcode.h $(HEADER_DIR)/struc.h
+	gcc -c $(SRC_DIR)/gcode.c -I $(HEADER_DIR)
 
 Gcodeparser.o: $(SRC_DIR)/Gcodeparser.c
 	gcc  -c $(SRC_DIR)/Gcodeparser.c
@@ -27,4 +30,4 @@ clean:
 	rm -rf $(target)
 	rm -rf build
 test:
-	./build/Gcodeparser ./Gcode/test3_0001.ngc
+	././build/Gcodeparser < ./Gcode/test.ngc
