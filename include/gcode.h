@@ -38,6 +38,32 @@
 #define MODAL_GROUP_12 9 // [G54,G55,G56,G57,G58,G59] Coordinate system selecti    on
 
 
+<<<<<<< HEAD
+=======
+// Define command actions for within execution-type modal groups (motion, stopping, non-modal). Used
+// internally by the parser to know which command to execute.
+#define MOTION_MODE_SEEK 0 // G0 
+#define MOTION_MODE_LINEAR 1 // G1
+#define MOTION_MODE_CW_ARC 2  // G2
+#define MOTION_MODE_CCW_ARC 3  // G3
+#define MOTION_MODE_CANCEL 4 // G80
+
+#define PROGRAM_FLOW_RUNNING 0
+#define PROGRAM_FLOW_PAUSED 1 // M0, M1
+#define PROGRAM_FLOW_COMPLETED 2 // M2, M30
+
+#define NON_MODAL_NONE 0
+#define NON_MODAL_DWELL 1 // G4
+#define NON_MODAL_SET_COORDINATE_DATA 2 // G10
+#define NON_MODAL_GO_HOME_0 3 // G28
+#define NON_MODAL_SET_HOME_0 4 // G28.1
+#define NON_MODAL_GO_HOME_1 5 // G30
+#define NON_MODAL_SET_HOME_1 6 // G30.1
+#define NON_MODAL_SET_COORDINATE_OFFSET 7 // G92
+#define NON_MODAL_RESET_COORDINATE_OFFSET 8 //G92.1
+
+
+>>>>>>> f3c5b44682272cc2f200c3828e1625e7e4599495
 
 
 
