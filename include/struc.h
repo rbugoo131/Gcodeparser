@@ -7,6 +7,7 @@
 
 
 #include<stdio.h>
+#include<stdbool.h>
 
 typedef struct Point{
 	double x;
@@ -18,9 +19,13 @@ typedef struct Gcmd_struc{
 	char cmd_type;
 	int group_num;
 	int motion_mode;
-	int counter;
+	int non_modal;
 	int status_code;
-
+	bool inches_mode;	
+	int  coord_select;
+	int spindle_direction;
+	int program_st;
+	
 }Gcmd_struc;
 
 extern Gcmd_struc gc;

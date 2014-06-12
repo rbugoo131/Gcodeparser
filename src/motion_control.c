@@ -13,7 +13,7 @@ void mc_line(Point p1)
 	printf("draw line\n");
 }
 
-
+//draw circle
 void mc_arc()
 {
 	printf("draw circle\n");

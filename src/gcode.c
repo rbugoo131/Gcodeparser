@@ -23,7 +23,12 @@ int  gc_execute_line(char *line)
 	float f_value;
 	int int_value;
 	int line_cnt=0;
-	int group_number;
+	int group_number;	//Note: one block can contain G-cmd of different modal-group
+						//But with same group,only last G-cmd is valid
+						//group 00 has no continuous ability
+	
+	int non_modal_action=gc.non_modal=NON_MODAL_NONE;// track action of group 0
+	
 	/*Parse 1: parse commands and set all modes.
 	 check group violation?
 	 */
@@ -37,7 +42,7 @@ int  gc_execute_line(char *line)
 			case 'G':
 				gc.cmd_type='G';
 				printf("G command");
-				printf("int value=%d\n",int_value);
+				printf(" value=%d\n",int_value);
 				//set modal group
 				//什麼樣的int_value不重要？重要的是移動模式?
 				switch(int_value)
@@ -57,17 +62,62 @@ int  gc_execute_line(char *line)
 				switch(int_value)
 				{
 
+					case 0:	gc.motion_mode	=	MOTION_MODE_SEEK;		break;
+					case 1:	gc.motion_mode	=	MOTION_MODE_LINEAR; 	break;
+					case 2:	gc.motion_mode	=	MOTION_MODE_CW_ARC; 	break;
+					case 3:	gc.motion_mode	=	MOTION_MODE_CCW_ARC;	break;
+					case 4:	non_modal_action	=	NON_MODAL_DWELL;	break;
+					case 10:	non_modal_action	=	NON_MODAL_SET_COORDINATE_DATA; break;
+					case 20:	gc.inches_mode =	true;	break;	//inches
+					case 21:	gc.inches_mode	=	false;	break;	//millimeters
+					//keep to set hone command
+					case 54: case 55: case 56: case 57: case 58: case 59:	//set coordinate
+								gc.coord_select=int_value-53;
+								break;
+					case 80: gc.motion_mode	=	MOTION_MODE_CANCEL;	break;
+					default: FILL_ST(STATUS_UNSUPPORTED_STATEMENT);
 				}
 				break;
 			case 'M':
-				printf("M command\n");
-				break;
+				printf("M command");
+				printf(" value=%d\n",int_value);
+				switch(int_value)
+				{
+					case 0: gc.program_st=PROGRAM_FLOW_PAUSED; break;
+					case 1: break; //optional stop
+					case 2: case 30: gc.program_st=PROGRAM_FLOW_COMPLETED; break;
+					case 3:	gc.spindle_direction = 1; break;//clockwise
+					case 4: gc.spindle_direction = -1; break;//counter clockwise
+					case 5:	gc.spindle_direction = 0; break;//stop
+					default: FILL_ST(STATUS_UNSUPPORTED_STATEMENT);
+					break;
+				}
 		}
 
-		//parse for parameters
+		//any error,all status code>0 is an error
+		if(gc.status_code) return gc.status_code;
+
+		//Parse2: parameters
 		while(parse_word(&letter,&f_value,line,&line_cnt))
 		{
+			switch(letter)
+			{
+				//hereby ignore?
+				case 'G': case 'M': case 'N': break;
+				case 'F':
+					break;
+				case 'X':
+					break;
+				case 'Y':
+					break;
+				case 'Z':
+					break;
+				default:FILL_ST(STATUS_UNSUPPORTED_STATEMENT);
+			}
 		}
+		
+		//should put in the while loop
+		if(gc.status_code) return gc.status_code;
 	}
 
 	return 1;
