@@ -6,6 +6,7 @@
 
 //fill in the status
 #define FILL_ST(status) gc.status_code=status;
+#define TO_MILLIMETERS(value)  ((gc.inches_mode) ? (value)*MM_PER_INCH :(value))
 
 Gcmd_struc gc;
 
@@ -75,10 +76,13 @@ int  gc_execute_line(char *line)
 								gc.coord_select=int_value-53;
 								break;
 					case 80: gc.motion_mode	=	MOTION_MODE_CANCEL;	break;
+					case 93: gc.inverse_feed_rate_mode = true;	break;
+					case 94: gc.inverse_feed_rate_mode = false;	break;
 					default: FILL_ST(STATUS_UNSUPPORTED_STATEMENT);
 				}
 				break;
 			case 'M':
+				gc.cmd_type='M';
 				printf("M command");
 				printf(" value=%d\n",int_value);
 				switch(int_value)
@@ -92,10 +96,15 @@ int  gc_execute_line(char *line)
 					default: FILL_ST(STATUS_UNSUPPORTED_STATEMENT);
 					break;
 				}
+	//		default: FILL_ST(UNEXPECTED_COMMAND_LETTER);
 		}
 
 		//any error,all status code>0 is an error
 		if(gc.status_code) return gc.status_code;
+		/*
+		   set default value for parameters
+		   */
+		gc.inverse_feed_rate_mode=false;
 
 		//Parse2: parameters
 		while(parse_word(&letter,&f_value,line,&line_cnt))
@@ -104,13 +113,47 @@ int  gc_execute_line(char *line)
 			{
 				//hereby ignore?
 				case 'G': case 'M': case 'N': break;
-				case 'F':
+				case 'F'://default??
+					if(f_value<=0)	FILL_ST(STATUS_INVALID_STATEMENT);
+					
+					if(gc.inverse_feed_rate_mode)	gc.inverse_feed_rate=TO_MILLIMETERS(f_value);//seconds per motion
+					else	gc.feed_rate= TO_MILLIMETERS(f_value); //millimeters per minute
+					
+					break;
+				case 'I'://center of x axis in arc
+					gc.cent.x=TO_MILLIMETERS(f_value);
+					break;
+				case 'J'://center of y axis in arc
+					gc.cent.z=TO_MILLIMETERS(f_value);
+					break;
+				case 'K'://center of z axis in arc
+					gc.cent.z=TO_MILLIMETERS(f_value);
+					break;
+				case 'L'://loop count
+					gc.loop_cnt=trunc(f_value);
+					break;
+				case 'P':
+					gc.P=f_value;
+					break;
+				case 'R'://size of arc radius
+					gc.radius=TO_MILLIMETERS(f_value);
+					break;
+				case 'S'://speed
+					if( f_value < 0) FILL_ST(STATUS_INVALID_STATEMENT);
+					gc.spindle_speed=f_value;
+					break;
+				case 'T'://select tools
+					if( f_value < 0) FILL_ST(STATUS_INVALID_STATEMENT);
+					gc.tool=trunc(f_value);
 					break;
 				case 'X':
+					gc.p.x=TO_MILLIMETERS(f_value);
 					break;
 				case 'Y':
+					gc.p.y=TO_MILLIMETERS(f_value);
 					break;
 				case 'Z':
+					gc.p.z=TO_MILLIMETERS(f_value);
 					break;
 				default:FILL_ST(STATUS_UNSUPPORTED_STATEMENT);
 			}
@@ -136,6 +179,7 @@ int  parse_word(char *letter ,float *ptr_float,char *line, int *line_cnt)
 	//not an useful command
 	if( (*letter<'A') || (*letter>'Z') )
 	{
+		printf("no! %c \n",*letter);
 		FILL_ST(STATUS_UNEXPECTED_COMMAND_LETTER);
 		return 0;
 	}

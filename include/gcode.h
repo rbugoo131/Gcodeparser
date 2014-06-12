@@ -61,7 +61,7 @@
 #define NON_MODAL_RESET_COORDINATE_OFFSET 8 //G92.1
 
 
-
+#define MM_PER_INCH 25.4
 
 
 int parse_word(char *letter,float *ptr_float,char *line ,int *line_cnt);
