@@ -23,16 +23,12 @@ int  gc_execute_line(char *line)
 	float f_value;
 	int int_value;
 	int line_cnt=0;
-<<<<<<< HEAD
-	int group_number;
-=======
 	int group_number;	//Note: one block can contain G-cmd of different modal-group
 						//But with same group,only last G-cmd is valid
 						//group 00 has no continuous ability
 	
 	int non_modal_action=gc.non_modal=NON_MODAL_NONE;// track action of group 0
 	
->>>>>>> f3c5b44682272cc2f200c3828e1625e7e4599495
 	/*Parse 1: parse commands and set all modes.
 	 check group violation?
 	 */
@@ -46,11 +42,7 @@ int  gc_execute_line(char *line)
 			case 'G':
 				gc.cmd_type='G';
 				printf("G command");
-<<<<<<< HEAD
-				printf("int value=%d\n",int_value);
-=======
 				printf(" value=%d\n",int_value);
->>>>>>> f3c5b44682272cc2f200c3828e1625e7e4599495
 				//set modal group
 				//什麼樣的int_value不重要？重要的是移動模式?
 				switch(int_value)
@@ -70,19 +62,6 @@ int  gc_execute_line(char *line)
 				switch(int_value)
 				{
 
-<<<<<<< HEAD
-				}
-				break;
-			case 'M':
-				printf("M command\n");
-				break;
-		}
-
-		//parse for parameters
-		while(parse_word(&letter,&f_value,line,&line_cnt))
-		{
-		}
-=======
 					case 0:	gc.motion_mode	=	MOTION_MODE_SEEK;		break;
 					case 1:	gc.motion_mode	=	MOTION_MODE_LINEAR; 	break;
 					case 2:	gc.motion_mode	=	MOTION_MODE_CW_ARC; 	break;
@@ -139,7 +118,6 @@ int  gc_execute_line(char *line)
 		
 		//should put in the while loop
 		if(gc.status_code) return gc.status_code;
->>>>>>> f3c5b44682272cc2f200c3828e1625e7e4599495
 	}
 
 	return 1;

@@ -21,13 +21,8 @@ extra_fun.o: $(SRC_DIR)/extra_fun.c $(HEADER_DIR)/extra_fun.h
 gcode.o: $(SRC_DIR)/gcode.c $(HEADER_DIR)/gcode.h $(HEADER_DIR)/struc.h
 	gcc -c $(SRC_DIR)/gcode.c -I $(HEADER_DIR)
 
-<<<<<<< HEAD
-Gcodeparser.o: $(SRC_DIR)/Gcodeparser.c
-	gcc  -c $(SRC_DIR)/Gcodeparser.c
-=======
 Gcodeparser.o: $(SRC_DIR)/Gcodeparser.c $(HEADER_DIR)/struc.h
 	gcc  -c $(SRC_DIR)/Gcodeparser.c -I $(HEADER_DIR)
->>>>>>> f3c5b44682272cc2f200c3828e1625e7e4599495
 	mkdir build
 
 clean:
